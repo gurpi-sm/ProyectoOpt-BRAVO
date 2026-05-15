@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @version 1.1.0
  */
 public class DAOArrayList implements IDAO{
-    //Para probar commit
+    //Para probar commit de Roger
     ArrayList <Person> people = new ArrayList<>();
 
     @Override
