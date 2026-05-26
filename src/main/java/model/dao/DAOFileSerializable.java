@@ -171,5 +171,10 @@ public class DAOFileSerializable implements IDAO {
         delete(p);
         insert(p);
     }
-
+    
+    @Override
+    public int countPeople() throws Exception {
+        ArrayList<Person> allPeople = readAll();
+        return (allPeople != null) ? allPeople.size() : 0;
+    }
 }

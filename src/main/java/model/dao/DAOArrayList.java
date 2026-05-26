@@ -44,5 +44,8 @@ public class DAOArrayList implements IDAO{
     public ArrayList<Person> readAll(){
         return people;
     }
-   
+    @Override
+    public int countPeople() throws Exception {
+    return people.size(); 
+    }
 }

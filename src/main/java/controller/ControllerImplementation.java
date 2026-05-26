@@ -47,7 +47,7 @@ import org.jdatepicker.DateModel;
  * @version 1.1.0
  */
 public class ControllerImplementation implements IController, ActionListener {
-
+    public static controller.IController instance;
     //Instance variables used so that both the visual and model parts can be 
     //accessed from the Controller.
     private final DataStorageSelection dSS;
@@ -58,6 +58,7 @@ public class ControllerImplementation implements IController, ActionListener {
     private Delete delete;
     private Update update;
     private ReadAll readAll;
+    private controller.IController controller;
 
     /**
      * This constructor allows the controller to know which data storage option
@@ -66,9 +67,14 @@ public class ControllerImplementation implements IController, ActionListener {
      *
      * @param dSS
      */
+    
     public ControllerImplementation(DataStorageSelection dSS) {
         this.dSS = dSS;
         ((JButton) (dSS.getAccept()[0])).addActionListener(this);
+    }
+    
+    public void setController(controller.IController controller) {
+        this.controller = controller;
     }
 
     /**
@@ -541,6 +547,10 @@ public class ControllerImplementation implements IController, ActionListener {
                 System.exit(0);
             }
         }
+    }
+    @Override
+    public int getPeopleCount() throws Exception {
+    return dao.countPeople(); 
     }
 
 }
