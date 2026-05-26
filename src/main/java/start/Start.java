@@ -10,7 +10,7 @@ import view.DataStorageSelection;
  * @version 1.1.0
  */
 public class Start {
-    
+    private static IController activeController;
     /**
      * The method starts the application through the "cont" object of the 
      * ControllerImplementation class. The constructor of this class requires 
@@ -23,6 +23,10 @@ public class Start {
     public static void main(String[] args) {
         DataStorageSelection dSS = new DataStorageSelection();      
         IController cont = new ControllerImplementation(dSS);
+        activeController = cont;
         cont.start();     
      }
+    public static IController getController() {
+        return activeController;
+    }
 }

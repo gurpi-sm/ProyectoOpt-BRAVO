@@ -63,4 +63,5 @@ public interface IDAO {
      * @throws java.lang.Exception
      */
     public abstract void deleteAll () throws Exception;
+    public abstract int countPeople() throws Exception;
 }
