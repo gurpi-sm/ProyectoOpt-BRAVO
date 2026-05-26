@@ -13,21 +13,23 @@ class PersonTest {
     private Person personWithFullData;
     private String nif = "12345678X";
     private String name = "John Doe";
+    private String email = "john@gmail.com";
     private Date dateOfBirth = new Date();
     private ImageIcon photo = new ImageIcon();
 
     @BeforeEach
     void setUp() {
         person = new Person(nif);
-        personWithFullData = new Person(name, nif, dateOfBirth, photo);
+        personWithFullData = new Person(name, nif, dateOfBirth, photo, email);
     }
 
-    @Test
+   @Test
     void testConstructorNifOnly() {
         assertEquals(nif, person.getNif());
         assertNull(person.getName());
         assertNull(person.getDateOfBirth());
         assertNull(person.getPhoto());
+        assertNull(person.getEmail()); 
     }
 
     @Test
@@ -43,6 +45,7 @@ class PersonTest {
         assertEquals(nif, personWithFullData.getNif());
         assertEquals(dateOfBirth, personWithFullData.getDateOfBirth());
         assertEquals(photo, personWithFullData.getPhoto());
+        
     }
 
     @Test
@@ -61,6 +64,12 @@ class PersonTest {
         byte[] photoBytes = new byte[]{1, 2, 3};
         person.setPhotoOnlyJPA(photoBytes);
         assertArrayEquals(photoBytes, person.getPhotoOnlyJPA());
+
+        
+        String testEmail = "test@stucom.com";
+        person.setEmail(testEmail);
+        assertEquals(testEmail, person.getEmail());
+        
     }
 
     @Test
@@ -74,6 +83,7 @@ class PersonTest {
         assertTrue(person.equals(anotherPerson));
 
         Person differentPerson = new Person("98765432Z");
+        
         assertFalse(person.equals(differentPerson));
     }
 
@@ -94,8 +104,10 @@ class PersonTest {
 
     @Test
     void testToString() {
+        
         String expected = "Person {Name = " + name + ", NIF = " + nif
-                + ", DateOfBirth = " + dateOfBirth + ", Photo = true}";
+                + ", DateOfBirth = " + dateOfBirth + ", Email = " + personWithFullData.getEmail() 
+                + ", Photo = true}";
         assertEquals(expected, personWithFullData.toString());
     }
 }
