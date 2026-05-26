@@ -4,12 +4,33 @@
  */
 package utils;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * @author Francesc Perez 
  * @version 1.1.0
  */
 public class DataValidation {
+private static final String EMAIL_REGEX = 
+        "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@" + 
+        "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
 
+    
+    private static final Pattern PATTERN = Pattern.compile(EMAIL_REGEX);
+
+    /**
+     * Valida si un string tiene un formato de email correcto.
+     * * @param email El correo electrónico a validar.
+     * @return true si es válido, false en caso contrario.
+     */
+    public static boolean isValidEmail(String email) {
+        if (email == null) {
+            return false;
+        }
+        Matcher matcher = PATTERN.matcher(email);
+        return matcher.matches();
+    }
     public static boolean isNumber(char c) {
         return (48 <= c && c <= 57);
     }

@@ -37,6 +37,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.jdatepicker.DateModel;
+import utils.DataValidation;
 
 /**
  * This class starts the visual part of the application and programs and manages
@@ -190,7 +191,8 @@ public class ControllerImplementation implements IController, ActionListener {
                         + "nif varchar(9) primary key not null, "
                         + "name varchar(50), "
                         + "dateOfBirth DATE, "
-                        + "photo varchar(200) );");
+                        + "photo varchar (200),"
+                        + "email varchar(50) );");
                 stmt.close();
                 conn.close();
             }
@@ -232,16 +234,34 @@ public class ControllerImplementation implements IController, ActionListener {
     }
 
     private void handleInsertPerson() {
-        Person p = new Person(insert.getNam().getText(), insert.getNif().getText());
-        if (insert.getDateOfBirth().getModel().getValue() != null) {
-            p.setDateOfBirth(((GregorianCalendar) insert.getDateOfBirth().getModel().getValue()).getTime());
-        }
-        if (insert.getPhoto().getIcon() != null) {
-            p.setPhoto((ImageIcon) insert.getPhoto().getIcon());
-        }
-        insert(p);
-        insert.getReset().doClick();
+    Person p = new Person(insert.getNam().getText(), insert.getNif().getText());
+    
+    if (insert.getDateOfBirth().getModel().getValue() != null) {
+        p.setDateOfBirth(((GregorianCalendar) insert.getDateOfBirth().getModel().getValue()).getTime());
     }
+    
+    
+    String emailText = insert.getEmail().getText().trim(); 
+    
+    
+    if (!emailText.isEmpty()) {
+        if (!DataValidation.isValidEmail(emailText)) {
+            JOptionPane.showMessageDialog(insert, "Invalid email format.",
+                    insert.getTitle(), JOptionPane.WARNING_MESSAGE);
+            return; 
+        } else {
+            
+            p.setEmail(emailText); 
+        }
+    }
+
+    if (insert.getPhoto().getIcon() != null) {
+        p.setPhoto((ImageIcon) insert.getPhoto().getIcon());
+    }
+    
+    insert(p);
+    insert.getReset().doClick();
+}
 
     private void handleReadAction() {
         read = new Read(menu, true);
@@ -250,26 +270,36 @@ public class ControllerImplementation implements IController, ActionListener {
     }
 
     private void handleReadPerson() {
-        Person p = new Person(read.getNif().getText());
-        Person pNew = read(p);
-        if (pNew != null) {
-            read.getNam().setText(pNew.getName());
-            if (pNew.getDateOfBirth() != null) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(pNew.getDateOfBirth());
-                DateModel<Calendar> dateModel = (DateModel<Calendar>) read.getDateOfBirth().getModel();
-                dateModel.setValue(calendar);
-            }
-            //To avoid charging former images
-            if (pNew.getPhoto() != null) {
-                pNew.getPhoto().getImage().flush();
-                read.getPhoto().setIcon(pNew.getPhoto());
-            }
-        } else {
-            JOptionPane.showMessageDialog(read, p.getNif() + " doesn't exist.", read.getTitle(), JOptionPane.WARNING_MESSAGE);
-            read.getReset().doClick();
+    Person p = new Person(read.getNif().getText());
+    Person pNew = read(p);
+    if (pNew != null) {
+        read.getNam().setText(pNew.getName());
+        
+        if (pNew.getDateOfBirth() != null) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(pNew.getDateOfBirth());
+            DateModel<Calendar> dateModel = (DateModel<Calendar>) read.getDateOfBirth().getModel();
+            dateModel.setValue(calendar);
         }
+        
+        
+        if (pNew.getEmail() != null && !pNew.getEmail().equals("null")) {
+            read.getEmail().setText(pNew.getEmail());
+        } else {
+            read.getEmail().setText(""); 
+        }
+        
+
+        //To avoid charging former images
+        if (pNew.getPhoto() != null) {
+            pNew.getPhoto().getImage().flush();
+            read.getPhoto().setIcon(pNew.getPhoto());
+        }
+    } else {
+        JOptionPane.showMessageDialog(read, p.getNif() + " doesn't exist.", read.getTitle(), JOptionPane.WARNING_MESSAGE);
+        read.getReset().doClick();
     }
+}
 
     public void handleDeleteAction() {
         delete = new Delete(menu, true);
@@ -312,10 +342,12 @@ public class ControllerImplementation implements IController, ActionListener {
             Person pNew = read(p);
             if (pNew != null) {
                 update.getNam().setEnabled(true);
+                update.getEmail().setEnabled(true);
                 update.getDateOfBirth().setEnabled(true);
                 update.getPhoto().setEnabled(true);
                 update.getUpdate().setEnabled(true);
                 update.getNam().setText(pNew.getName());
+                
                 if (pNew.getDateOfBirth() != null) {
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(pNew.getDateOfBirth());
@@ -335,45 +367,73 @@ public class ControllerImplementation implements IController, ActionListener {
     }
 
     public void handleUpdatePerson() {
-        if (update != null) {
-            Person p = new Person(update.getNam().getText(), update.getNif().getText());
-            if ((update.getDateOfBirth().getModel().getValue()) != null) {
-                p.setDateOfBirth(((GregorianCalendar) update.getDateOfBirth().getModel().getValue()).getTime());
-            }
-            if ((ImageIcon) (update.getPhoto().getIcon()) != null) {
-                p.setPhoto((ImageIcon) update.getPhoto().getIcon());
-            }
-            update(p);
-            JOptionPane.showMessageDialog(menu, "Person updated succesfully!");
-            update.getReset().doClick();
+    if (update != null) {
+        Person p = new Person(update.getNam().getText(), update.getNif().getText());
+        
+        if ((update.getDateOfBirth().getModel().getValue()) != null) {
+            p.setDateOfBirth(((GregorianCalendar) update.getDateOfBirth().getModel().getValue()).getTime());
         }
+        
+        // 1. Recuperamos el email de la interfaz gráfica y limpiamos espacios vacíos
+        String emailText = update.getEmail().getText().trim();
+        
+        // 2. Si el usuario ha escrito algo, lo validamos antes de actualizar
+        if (!emailText.isEmpty()) {
+            if (!utils.DataValidation.isValidEmail(emailText)) {
+                JOptionPane.showMessageDialog(update, "Invalid email format.",
+                        update.getTitle(), JOptionPane.WARNING_MESSAGE);
+                return; // Corta la ejecución aquí para que NO se guarde la persona con un formato erróneo
+            } else {
+                // 3. Si el formato es correcto, se lo añadimos al objeto Person
+                p.setEmail(emailText);
+            }
+        }
+
+        if ((ImageIcon) (update.getPhoto().getIcon()) != null) {
+            p.setPhoto((ImageIcon) update.getPhoto().getIcon());
+        }
+        
+        update(p);
+        JOptionPane.showMessageDialog(menu, "Person updated successfully!");
+        update.getReset().doClick();
     }
+}
 
     public void handleReadAll() {
-        ArrayList<Person> s = readAll();
-        if (s.isEmpty()) {
-            JOptionPane.showMessageDialog(menu, "There are not people registered yet.", "Read All - People v1.1.0", JOptionPane.WARNING_MESSAGE);
-        } else {
-            readAll = new ReadAll(menu, true);
-            DefaultTableModel model = (DefaultTableModel) readAll.getTable().getModel();
-            for (int i = 0; i < s.size(); i++) {
-                model.addRow(new Object[i]);
-                model.setValueAt(s.get(i).getNif(), i, 0);
-                model.setValueAt(s.get(i).getName(), i, 1);
-                if (s.get(i).getDateOfBirth() != null) {
-                    model.setValueAt(s.get(i).getDateOfBirth().toString(), i, 2);
-                } else {
-                    model.setValueAt("", i, 2);
-                }
-                if (s.get(i).getPhoto() != null) {
-                    model.setValueAt("yes", i, 3);
-                } else {
-                    model.setValueAt("no", i, 3);
-                }
+    ArrayList<Person> s = readAll();
+    if (s.isEmpty()) {
+        JOptionPane.showMessageDialog(menu, "There are not people registered yet.", "Read All - People v1.1.0", JOptionPane.WARNING_MESSAGE);
+    } else {
+        readAll = new ReadAll(menu, true);
+        DefaultTableModel model = (DefaultTableModel) readAll.getTable().getModel();
+        for (int i = 0; i < s.size(); i++) {
+            model.addRow(new Object[i]);
+            model.setValueAt(s.get(i).getNif(), i, 0);
+            model.setValueAt(s.get(i).getName(), i, 1);
+            
+            if (s.get(i).getDateOfBirth() != null) {
+                model.setValueAt(s.get(i).getDateOfBirth().toString(), i, 2);
+            } else {
+                model.setValueAt("", i, 2);
             }
-            readAll.setVisible(true);
+            
+            if (s.get(i).getPhoto() != null) {
+                model.setValueAt("yes", i, 3);
+            } else {
+                model.setValueAt("no", i, 3);
+            }
+            
+            
+            if (s.get(i).getEmail() != null) { 
+                model.setValueAt(s.get(i).getEmail(), i, 4); 
+            } else {
+                model.setValueAt("", i, 4); 
+            }
+            // ----------------------------------------------------------
         }
+        readAll.setVisible(true);
     }
+}
 
     public void handleDeleteAll() {
         Object[] options = {"Yes", "No"};

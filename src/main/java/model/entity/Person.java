@@ -17,10 +17,11 @@ import javax.swing.ImageIcon;
 @Entity
 public class Person implements Serializable{
 
-    @Id 
+   @Id 
     private String nif;
     private String name;
     private Date dateOfBirth;
+    private String email; // <-- NUEVO ATRIBUTO
     @Transient
     private ImageIcon photo;
     @Lob
@@ -57,9 +58,10 @@ public class Person implements Serializable{
      * @param dateOfBirth
      * @param photo
      */
-    public Person(String name, String nif, Date dateOfBirth, ImageIcon photo) {
+    public Person(String name, String nif, Date dateOfBirth, ImageIcon photo, String email) {
         this.name = name;      
         this.nif = nif;
+        this.email = email;
         this.dateOfBirth = dateOfBirth;
         this.photo = photo;
     }
@@ -88,6 +90,16 @@ public class Person implements Serializable{
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
+
+    // --- NUEVO GETTER Y SETTER PARA EL EMAIL ---
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    // -------------------------------------------
 
     public ImageIcon getPhoto() {
         return photo;
@@ -138,7 +150,6 @@ public class Person implements Serializable{
         return Objects.equals(this.hashCode(), other.hashCode());
     }
 
-    
     /**
      * Function sed to show person's inform by console. Only for debugging 
      * pourposes.
@@ -147,7 +158,7 @@ public class Person implements Serializable{
     @Override
     public String toString() {
         return "Person {" + "Name = " + name + ", NIF = " + nif
-                + ", DateOfBirth = " + dateOfBirth + ", Photo = " + (photo!=null) + "}";
+                + ", DateOfBirth = " + dateOfBirth + ", Email = " + email 
+                + ", Photo = " + (photo != null) + "}";
     }
-
 }
