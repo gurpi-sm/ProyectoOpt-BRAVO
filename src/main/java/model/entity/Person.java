@@ -23,6 +23,7 @@ public class Person implements Serializable{
     private Date dateOfBirth;
     private String email;
     private String phoneNumber;// <-- NUEVO ATRIBUTO
+    private String postalCode; // <-- NUEVO ATRIBUTO
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
@@ -108,7 +109,16 @@ public class Person implements Serializable{
     public void setEmail(String email) {
         this.email = email;
     }
+    
+    public String getPostalCode() {
+    return postalCode;
+    }
+    
     // -------------------------------------------
+
+    public void setPostalCode(String postalCode) {
+    this.postalCode = postalCode;
+    }
 
     public ImageIcon getPhoto() {
         return photo;

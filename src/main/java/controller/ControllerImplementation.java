@@ -235,45 +235,55 @@ public class ControllerImplementation implements IController, ActionListener {
     }
 
     private void handleInsertPerson() {
-    Person p = new Person(insert.getNam().getText(), insert.getNif().getText());
-    
-    if (insert.getDateOfBirth().getModel().getValue() != null) {
-        p.setDateOfBirth(((GregorianCalendar) insert.getDateOfBirth().getModel().getValue()).getTime());
-    }
-    
-    
-    String emailText = insert.getEmail().getText().trim(); 
-    
-    
-    if (!emailText.isEmpty()) {
-        if (!DataValidation.isValidEmail(emailText)) {
-            JOptionPane.showMessageDialog(insert, "Invalid email format.",
-                    insert.getTitle(), JOptionPane.WARNING_MESSAGE);
-            return; 
-        } else {
-            
-            p.setEmail(emailText); 
+        Person p = new Person(insert.getNam().getText(), insert.getNif().getText());
+        
+        if (insert.getDateOfBirth().getModel().getValue() != null) {
+            p.setDateOfBirth(((GregorianCalendar) insert.getDateOfBirth().getModel().getValue()).getTime());
         }
-    }
-    
-    String phoneText = insert.getPhoneNumber().getText().trim();
-    if (!phoneText.isEmpty()) {
-        if (!DataValidation.isValidPhone(phoneText)) {
-            JOptionPane.showMessageDialog(insert, "Invalid phone number format.",
-                    insert.getTitle(), JOptionPane.ERROR_MESSAGE);
-            return; // Detiene el flujo si el formato es incorrecto
-        } else {
-            p.setPhoneNumber(phoneText);
+        
+        String emailText = insert.getEmail().getText().trim(); 
+        
+        if (!emailText.isEmpty()) {
+            if (!DataValidation.isValidEmail(emailText)) {
+                JOptionPane.showMessageDialog(insert, "Invalid email format.",
+                        insert.getTitle(), JOptionPane.WARNING_MESSAGE);
+                return; 
+            } else {
+                p.setEmail(emailText); 
+            }
         }
+        
+        String phoneText = insert.getPhoneNumber().getText().trim();
+        if (!phoneText.isEmpty()) {
+            if (!DataValidation.isValidPhone(phoneText)) {
+                JOptionPane.showMessageDialog(insert, "Invalid phone number format.",
+                        insert.getTitle(), JOptionPane.ERROR_MESSAGE);
+                return;
+            } else {
+                p.setPhoneNumber(phoneText);
+            }
+        }
+
+        // NUEVO CODIGO POSTAL AQUI
+        String postalCodeText = insert.getPostalCode().getText().trim();
+        if (!postalCodeText.isEmpty()) {
+            if (!DataValidation.isValidPostalCode(postalCodeText)) {
+                JOptionPane.showMessageDialog(insert, "Invalid postal code format.",
+                        insert.getTitle(), JOptionPane.ERROR_MESSAGE);
+                return;
+            } else {
+                p.setPostalCode(postalCodeText);
+            }
+        }
+        // ==================================
+        
+        if (insert.getPhoto().getIcon() != null) {
+            p.setPhoto((ImageIcon) insert.getPhoto().getIcon());
+        }
+        
+        insert(p);
+        insert.getReset().doClick();
     }
-    
-    if (insert.getPhoto().getIcon() != null) {
-        p.setPhoto((ImageIcon) insert.getPhoto().getIcon());
-    }
-    
-    insert(p);
-    insert.getReset().doClick();
-}
 
     private void handleReadAction() {
         read = new Read(menu, true);
@@ -282,40 +292,47 @@ public class ControllerImplementation implements IController, ActionListener {
     }
 
     private void handleReadPerson() {
-    Person p = new Person(read.getNif().getText());
-    Person pNew = read(p);
-    if (pNew != null) {
-        read.getNam().setText(pNew.getName());
-        
-        if (pNew.getDateOfBirth() != null) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(pNew.getDateOfBirth());
-            DateModel<Calendar> dateModel = (DateModel<Calendar>) read.getDateOfBirth().getModel();
-            dateModel.setValue(calendar);
-        }
-        
-        
-        if (pNew.getEmail() != null && !pNew.getEmail().equals("null")) {
-            read.getEmail().setText(pNew.getEmail());
+        Person p = new Person(read.getNif().getText());
+        Person pNew = read(p);
+        if (pNew != null) {
+            read.getNam().setText(pNew.getName());
+            
+            if (pNew.getDateOfBirth() != null) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(pNew.getDateOfBirth());
+                DateModel<Calendar> dateModel = (DateModel<Calendar>) read.getDateOfBirth().getModel();
+                dateModel.setValue(calendar);
+            }
+            
+            if (pNew.getEmail() != null && !pNew.getEmail().equals("null")) {
+                read.getEmail().setText(pNew.getEmail());
+            } else {
+                read.getEmail().setText(""); 
+            }
+            
+            if (pNew.getPhoneNumber() != null && !pNew.getPhoneNumber().equals("null")) {
+                read.getPhoneNumber().setText(pNew.getPhoneNumber());
+            } else {
+                read.getPhoneNumber().setText("");
+            }
+
+            // NUEVO MUESTRA EL CODIGO POSTAL AQUI
+            if (pNew.getPostalCode() != null && !pNew.getPostalCode().equals("null")) {
+                read.getPostalCode().setText(pNew.getPostalCode());
+            } else {
+                read.getPostalCode().setText("");
+            }
+            // =============================================
+
+            if (pNew.getPhoto() != null) {
+                pNew.getPhoto().getImage().flush();
+                read.getPhoto().setIcon(pNew.getPhoto());
+            }
         } else {
-            read.getEmail().setText(""); 
+            JOptionPane.showMessageDialog(read, p.getNif() + " doesn't exist.", read.getTitle(), JOptionPane.WARNING_MESSAGE);
+            read.getReset().doClick();
         }
-        
-        if (pNew.getPhoneNumber() != null && !pNew.getPhoneNumber().equals("null")) {
-            read.getPhoneNumber().setText(pNew.getPhoneNumber());
-        } else {
-            read.getPhoneNumber().setText("");
-        }
-        //To avoid charging former images
-        if (pNew.getPhoto() != null) {
-            pNew.getPhoto().getImage().flush();
-            read.getPhoto().setIcon(pNew.getPhoto());
-        }
-    } else {
-        JOptionPane.showMessageDialog(read, p.getNif() + " doesn't exist.", read.getTitle(), JOptionPane.WARNING_MESSAGE);
-        read.getReset().doClick();
     }
-}
 
     public void handleDeleteAction() {
         delete = new Delete(menu, true);
@@ -390,48 +407,58 @@ public class ControllerImplementation implements IController, ActionListener {
     }
 
     public void handleUpdatePerson() {
-    if (update != null) {
-        Person p = new Person(update.getNam().getText(), update.getNif().getText());
-        
-        if ((update.getDateOfBirth().getModel().getValue()) != null) {
-            p.setDateOfBirth(((GregorianCalendar) update.getDateOfBirth().getModel().getValue()).getTime());
-        }
-        
-        // 1. Recuperamos el email de la interfaz gráfica y limpiamos espacios vacíos
-        String emailText = update.getEmail().getText().trim();
-        
-        // 2. Si el usuario ha escrito algo, lo validamos antes de actualizar
-        if (!emailText.isEmpty()) {
-            if (!utils.DataValidation.isValidEmail(emailText)) {
-                JOptionPane.showMessageDialog(update, "Invalid email format.",
-                        update.getTitle(), JOptionPane.WARNING_MESSAGE);
-                return; // Corta la ejecución aquí para que NO se guarde la persona con un formato erróneo
-            } else {
-                // 3. Si el formato es correcto, se lo añadimos al objeto Person
-                p.setEmail(emailText);
+        if (update != null) {
+            Person p = new Person(update.getNam().getText(), update.getNif().getText());
+            
+            if ((update.getDateOfBirth().getModel().getValue()) != null) {
+                p.setDateOfBirth(((GregorianCalendar) update.getDateOfBirth().getModel().getValue()).getTime());
             }
-        }
-        
-        String phoneText = update.getPhoneNumber().getText().trim();
-        if (!phoneText.isEmpty()) {
-            if (!utils.DataValidation.isValidPhone(phoneText)) {
-                JOptionPane.showMessageDialog(update, "Invalid phone number format.",
-                        update.getTitle(), JOptionPane.ERROR_MESSAGE);
-                return; // Frena el update si rompe las reglas del Regex
-            } else {
-                p.setPhoneNumber(phoneText);
+            
+            String emailText = update.getEmail().getText().trim();
+            
+            if (!emailText.isEmpty()) {
+                if (!utils.DataValidation.isValidEmail(emailText)) {
+                    JOptionPane.showMessageDialog(update, "Invalid email format.",
+                            update.getTitle(), JOptionPane.WARNING_MESSAGE);
+                    return;
+                } else {
+                    p.setEmail(emailText);
+                }
             }
-        }
+            
+            String phoneText = update.getPhoneNumber().getText().trim();
+            if (!phoneText.isEmpty()) {
+                if (!utils.DataValidation.isValidPhone(phoneText)) {
+                    JOptionPane.showMessageDialog(update, "Invalid phone number format.",
+                            update.getTitle(), JOptionPane.ERROR_MESSAGE);
+                    return;
+                } else {
+                    p.setPhoneNumber(phoneText);
+                }
+            }
 
-        if ((ImageIcon) (update.getPhoto().getIcon()) != null) {
-            p.setPhoto((ImageIcon) update.getPhoto().getIcon());
+            // NUEVO CODIGO POSTAL AQUI
+            String postalCodeText = update.getPostalCode().getText().trim();
+            if (!postalCodeText.isEmpty()) {
+                if (!utils.DataValidation.isValidPostalCode(postalCodeText)) {
+                    JOptionPane.showMessageDialog(update, "Invalid postal code format.",
+                            update.getTitle(), JOptionPane.ERROR_MESSAGE);
+                    return;
+                } else {
+                    p.setPostalCode(postalCodeText);
+                }
+            }
+            // ==================================
+
+            if ((ImageIcon) (update.getPhoto().getIcon()) != null) {
+                p.setPhoto((ImageIcon) update.getPhoto().getIcon());
+            }
+            
+            update(p);
+            JOptionPane.showMessageDialog(menu, "Person updated successfully!");
+            update.getReset().doClick();
         }
-        
-        update(p);
-        JOptionPane.showMessageDialog(menu, "Person updated successfully!");
-        update.getReset().doClick();
     }
-}
 
     public void handleReadAll() {
     ArrayList<Person> s = readAll();
