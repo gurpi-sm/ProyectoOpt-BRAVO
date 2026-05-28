@@ -115,7 +115,6 @@ public class ReadAll extends javax.swing.JDialog {
 
     private void exportDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportDataActionPerformed
         // TODO add your handling code here:
-                // TODO add your handling code here:
         // Conseguir la fecha de hoy para el nombre del archivo
         Date hoy = new Date();
         SimpleDateFormat formato = new SimpleDateFormat("yyyyMMdd");
