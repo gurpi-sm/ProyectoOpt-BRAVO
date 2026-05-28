@@ -60,7 +60,7 @@ public class ControllerImplementation implements IController, ActionListener {
     private Update update;
     private ReadAll readAll;
     private controller.IController controller;
-
+    public static boolean admin;
     /**
      * This constructor allows the controller to know which data storage option
      * the user has chosen.Schedule an event to deploy when the user has made

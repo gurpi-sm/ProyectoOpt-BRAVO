@@ -1,5 +1,6 @@
 package view;
 
+import controller.ControllerImplementation;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
@@ -19,13 +20,37 @@ public class Menu extends javax.swing.JFrame {
     
     public Menu() {
         initComponents();
+        configurarPermisos();
+        
          try {
             setIconImage(new ImageIcon(ImageIO.read(new File("images/logo.png"))).getImage());
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, "Application logo is not available", "WARNING MESSAGE", JOptionPane.WARNING_MESSAGE);
         }
     }
-
+    private void configurarPermisos() {
+        boolean esAdmin = ControllerImplementation.admin;
+        if (esAdmin == false) {
+            
+            insert.setVisible(false);
+            update.setVisible(false);
+            delete.setVisible(false);
+            deleteAll.setVisible(false);
+            deleteAll1.setVisible(false);
+            this.revalidate();
+            this.repaint();
+            
+        } else if (esAdmin == true) {
+            
+            insert.setVisible(true);
+            update.setVisible(true);
+            delete.setVisible(true);
+            deleteAll.setVisible(true);
+            deleteAll1.setVisible(true);
+            this.revalidate();
+            this.repaint();
+        }
+    }
     public JButton getInsert() {
         return insert;
     }
