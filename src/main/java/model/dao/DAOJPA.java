@@ -102,7 +102,7 @@ public class DAOJPA implements IDAO {
         em.close();
     }
 
-    @Override
+@Override
     public void update(Person p) throws Exception {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
@@ -110,10 +110,14 @@ public class DAOJPA implements IDAO {
         if (pC != null) {
             pC.setName(p.getName());
             pC.setDateOfBirth(p.getDateOfBirth());
-            if(p.getPhoto() != null)
+            pC.setEmail(p.getEmail());
+            pC.setPhoneNumber(p.getPhoneNumber());
+            
+            if (p.getPhoto() != null) {
                 pC.setPhotoOnlyJPA(imageIconToBytes(p.getPhoto()));
-            else
+            } else {
                 pC.setPhotoOnlyJPA(null);
+            }
             em.getTransaction().commit();
         }
         em.close();

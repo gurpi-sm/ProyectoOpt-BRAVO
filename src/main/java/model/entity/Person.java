@@ -21,7 +21,16 @@ public class Person implements Serializable{
     private String nif;
     private String name;
     private Date dateOfBirth;
-    private String email; // <-- NUEVO ATRIBUTO
+    private String email;
+    private String phoneNumber;// <-- NUEVO ATRIBUTO
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
     @Transient
     private ImageIcon photo;
     @Lob
@@ -158,7 +167,7 @@ public class Person implements Serializable{
     @Override
     public String toString() {
         return "Person {" + "Name = " + name + ", NIF = " + nif
-                + ", DateOfBirth = " + dateOfBirth + ", Email = " + email 
+                + ", DateOfBirth = " + dateOfBirth + ", Email = " + email + ",Phone Number = " + phoneNumber 
                 + ", Photo = " + (photo != null) + "}";
     }
 }

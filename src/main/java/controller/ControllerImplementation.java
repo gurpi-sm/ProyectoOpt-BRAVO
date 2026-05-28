@@ -192,7 +192,8 @@ public class ControllerImplementation implements IController, ActionListener {
                         + "name varchar(50), "
                         + "dateOfBirth DATE, "
                         + "photo varchar (200),"
-                        + "email varchar(50) );");
+                        + "email varchar(50) );"
+                        + "phoneNumber varchar(25) );");
                 stmt.close();
                 conn.close();
             }
@@ -254,7 +255,18 @@ public class ControllerImplementation implements IController, ActionListener {
             p.setEmail(emailText); 
         }
     }
-
+    
+    String phoneText = insert.getPhoneNumber().getText().trim();
+    if (!phoneText.isEmpty()) {
+        if (!DataValidation.isValidPhone(phoneText)) {
+            JOptionPane.showMessageDialog(insert, "Invalid phone number format.",
+                    insert.getTitle(), JOptionPane.ERROR_MESSAGE);
+            return; // Detiene el flujo si el formato es incorrecto
+        } else {
+            p.setPhoneNumber(phoneText);
+        }
+    }
+    
     if (insert.getPhoto().getIcon() != null) {
         p.setPhoto((ImageIcon) insert.getPhoto().getIcon());
     }
@@ -289,7 +301,11 @@ public class ControllerImplementation implements IController, ActionListener {
             read.getEmail().setText(""); 
         }
         
-
+        if (pNew.getPhoneNumber() != null && !pNew.getPhoneNumber().equals("null")) {
+            read.getPhoneNumber().setText(pNew.getPhoneNumber());
+        } else {
+            read.getPhoneNumber().setText("");
+        }
         //To avoid charging former images
         if (pNew.getPhoto() != null) {
             pNew.getPhoto().getImage().flush();
@@ -343,6 +359,7 @@ public class ControllerImplementation implements IController, ActionListener {
             if (pNew != null) {
                 update.getNam().setEnabled(true);
                 update.getEmail().setEnabled(true);
+                update.getPhoneNumber().setEnabled(true);
                 update.getDateOfBirth().setEnabled(true);
                 update.getPhoto().setEnabled(true);
                 update.getUpdate().setEnabled(true);
@@ -354,6 +371,12 @@ public class ControllerImplementation implements IController, ActionListener {
                     DateModel<Calendar> dateModel = (DateModel<Calendar>) update.getDateOfBirth().getModel();
                     dateModel.setValue(calendar);
                 }
+                if (pNew.getPhoneNumber() != null && !pNew.getPhoneNumber().equals("null")) {
+                    update.getPhoneNumber().setText(pNew.getPhoneNumber());
+                } else {
+                    update.getPhoneNumber().setText("");
+                }
+                
                 if (pNew.getPhoto() != null) {
                     pNew.getPhoto().getImage().flush();
                     update.getPhoto().setIcon(pNew.getPhoto());
@@ -388,6 +411,17 @@ public class ControllerImplementation implements IController, ActionListener {
                 p.setEmail(emailText);
             }
         }
+        
+        String phoneText = update.getPhoneNumber().getText().trim();
+        if (!phoneText.isEmpty()) {
+            if (!utils.DataValidation.isValidPhone(phoneText)) {
+                JOptionPane.showMessageDialog(update, "Invalid phone number format.",
+                        update.getTitle(), JOptionPane.ERROR_MESSAGE);
+                return; // Frena el update si rompe las reglas del Regex
+            } else {
+                p.setPhoneNumber(phoneText);
+            }
+        }
 
         if ((ImageIcon) (update.getPhoto().getIcon()) != null) {
             p.setPhoto((ImageIcon) update.getPhoto().getIcon());
@@ -407,7 +441,8 @@ public class ControllerImplementation implements IController, ActionListener {
         readAll = new ReadAll(menu, true);
         DefaultTableModel model = (DefaultTableModel) readAll.getTable().getModel();
         for (int i = 0; i < s.size(); i++) {
-            model.addRow(new Object[i]);
+            model.addRow(new Object[6]); 
+            
             model.setValueAt(s.get(i).getNif(), i, 0);
             model.setValueAt(s.get(i).getName(), i, 1);
             
@@ -423,13 +458,16 @@ public class ControllerImplementation implements IController, ActionListener {
                 model.setValueAt("no", i, 3);
             }
             
-            
             if (s.get(i).getEmail() != null) { 
                 model.setValueAt(s.get(i).getEmail(), i, 4); 
             } else {
                 model.setValueAt("", i, 4); 
             }
-            // ----------------------------------------------------------
+            if (s.get(i).getPhoneNumber() != null) {
+                model.setValueAt(s.get(i).getPhoneNumber(), i, 5);
+            } else {
+                model.setValueAt("", i, 5);
+            }
         }
         readAll.setVisible(true);
     }
