@@ -1,5 +1,13 @@
 package view;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -42,6 +50,7 @@ public class ReadAll extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
+        exportData = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Read All - People v1.1.0");
@@ -93,11 +102,61 @@ public class ReadAll extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(12, 24, 12, 24);
         getContentPane().add(jLabel2, gridBagConstraints);
 
+        exportData.setText("export Data");
+        exportData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportDataActionPerformed(evt);
+            }
+        });
+        getContentPane().add(exportData, new java.awt.GridBagConstraints());
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void exportDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportDataActionPerformed
+        // TODO add your handling code here:
+                // TODO add your handling code here:
+        // Conseguir la fecha de hoy para el nombre del archivo
+        Date hoy = new Date();
+        SimpleDateFormat formato = new SimpleDateFormat("yyyyMMdd");
+        String fechaTexto = formato.format(hoy);
+        
+        String nombreArchivo = "people_data_" + fechaTexto + ".csv";
+        
+        // Crear la ventana para que el usuario seleccione la ubicación donde guardar
+        JFileChooser selector = new JFileChooser();
+        selector.setSelectedFile(new File(nombreArchivo));
+        
+        if (selector.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File archivoDestino = selector.getSelectedFile();
+            
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivoDestino))) {
+                bw.write("NIF,Name,Date of Birth,Photo,Email");
+                bw.newLine();
+
+                // Recorrer la tabla de ReadAll fila por fila y sacar los datos de cada fila despues lo escribo en el archivo separando cada valor por una coma ","
+                int totalFilas = table.getRowCount();
+               for (int i = 0; i < totalFilas; i++) {
+                    String nif   = table.getValueAt(i, 0).toString();
+                    String name  = table.getValueAt(i, 1).toString();
+                    String birth = table.getValueAt(i, 2).toString();
+                    String photo = table.getValueAt(i, 3).toString();
+                    String email = table.getValueAt(i, 4).toString();
+
+                    bw.write(nif + "," + name + "," + birth + "," + photo + "," + email);
+                    bw.newLine();
+                }
+                JOptionPane.showMessageDialog(this, "Data exported successfully as " + archivoDestino.getName() + ".");
+                
+            } catch (IOException e) {
+                System.out.println("Error al escribir en el archivo");
+            }
+        }
+    }//GEN-LAST:event_exportDataActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton exportData;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
