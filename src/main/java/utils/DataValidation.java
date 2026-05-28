@@ -59,5 +59,12 @@ private static final String EMAIL_REGEX =
             "N","J","Z","S","Q","V","H","L","C","K","E"};
         return nifNoLetter + letter[Integer.parseInt(nifNoLetter)%23];
     }
+    public static boolean isValidPostalCode(String postalCode) {
+        if (postalCode == null) {
+            return false;
+        }
+        String postalCodeRegex = "^(\\d{5})(?:[-\\s]?\\d{4})?$";
+        return postalCode.matches(postalCodeRegex);
+    }
 
 }
