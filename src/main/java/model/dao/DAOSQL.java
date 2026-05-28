@@ -31,13 +31,12 @@ import javax.swing.ImageIcon;
  */
 public class DAOSQL implements IDAO {
 
-   private final String SQL_SELECT_ALL = "SELECT * FROM " + Routes.DB.getDbServerDB() + "." + Routes.DB.getDbServerTABLE() + ";";
+private final String SQL_SELECT_ALL = "SELECT * FROM " + Routes.DB.getDbServerDB() + "." + Routes.DB.getDbServerTABLE() + ";";
 private final String SQL_SELECT = "SELECT * FROM " + Routes.DB.getDbServerDB() + "." + Routes.DB.getDbServerTABLE() + " WHERE (nif = ?);";
-private final String SQL_INSERT = "INSERT INTO " + Routes.DB.getDbServerDB() + "." + Routes.DB.getDbServerTABLE() + " (nif, name, dateOfBirth, photo, email) VALUES (?, ?, ?, ?, ?);";
-private final String SQL_UPDATE = "UPDATE " + Routes.DB.getDbServerDB() + "." + Routes.DB.getDbServerTABLE() + " SET name = ?, dateOfBirth = ?, photo = ?, email = ? WHERE (nif = ?);";
+private final String SQL_INSERT = "INSERT INTO " + Routes.DB.getDbServerDB() + "." + Routes.DB.getDbServerTABLE() + " (nif, name, dateOfBirth, photo, email, phoneNumber) VALUES (?, ?, ?, ?, ?, ?);";
+private final String SQL_UPDATE = "UPDATE " + Routes.DB.getDbServerDB() + "." + Routes.DB.getDbServerTABLE() + " SET name = ?, dateOfBirth = ?, photo = ?, email = ?, phoneNumber = ? WHERE (nif = ?);";
 private final String SQL_DELETE = "DELETE FROM " + Routes.DB.getDbServerDB() + "." + Routes.DB.getDbServerTABLE() + " WHERE (nif = ?);";
 private final String SQL_DELETE_ALL = "TRUNCATE " + Routes.DB.getDbServerDB() + "." + Routes.DB.getDbServerTABLE() + ";";
-
     public Connection connect() throws SQLException {
         Connection conn;
         conn = DriverManager.getConnection(Routes.DB.getDbServerAddress() + Routes.DB.getDbServerComOpt(), Routes.DB.getDbServerUser(), Routes.DB.getDbServerPassword());
@@ -73,12 +72,15 @@ private final String SQL_DELETE_ALL = "TRUNCATE " + Routes.DB.getDbServerDB() + 
                 pReturn.setPhoto(new ImageIcon(photo));
             }
 
-           
             String email = rs.getString("email");
             if (email != null) {
                 pReturn.setEmail(email);
             }
-            // --------------------------------------------------
+          
+            String phoneNumber = rs.getString("phoneNumber");
+            if (phoneNumber != null) {
+                pReturn.setPhoneNumber(phoneNumber);
+            }
         }
         rs.close();
         instruction.close();
@@ -100,27 +102,25 @@ private final String SQL_DELETE_ALL = "TRUNCATE " + Routes.DB.getDbServerDB() + 
             String name = rs.getString("name");
             Date date = rs.getDate("dateOfBirth");
             
-            
             Person p = new Person(name, nif);
-            
             
             if (date != null) {
                 p.setDateOfBirth(date);
             }
-            
             
             String photo = rs.getString("photo");
             if (photo != null) {
                 p.setPhoto(new ImageIcon(photo));
             }
             
-            
             String email = rs.getString("email");
             if (email != null) {
                 p.setEmail(email);
             }
-            // ---------------------------------------------------
-            
+            String phoneNumber = rs.getString("phoneNumber");
+            if (phoneNumber != null) {
+                p.setPhoneNumber(phoneNumber);
+            }
             
             people.add(p);
         }
@@ -184,13 +184,17 @@ private final String SQL_DELETE_ALL = "TRUNCATE " + Routes.DB.getDbServerDB() + 
             instruction.setString(4, null);
         }
 
-        
         if (p.getEmail() != null && !p.getEmail().trim().isEmpty()) {
             instruction.setString(5, p.getEmail());
         } else {
             instruction.setNull(5, java.sql.Types.VARCHAR); 
         }
-        // ---------------------------------------------------------------
+
+        if (p.getPhoneNumber() != null && !p.getPhoneNumber().trim().isEmpty()) {
+            instruction.setString(6, p.getPhoneNumber());
+        } else {
+            instruction.setNull(6, java.sql.Types.VARCHAR);
+        }
 
         instruction.executeUpdate();
         instruction.close();
@@ -198,8 +202,7 @@ private final String SQL_DELETE_ALL = "TRUNCATE " + Routes.DB.getDbServerDB() + 
     }
 
     @Override
-  
-public void update(Person p) throws FileNotFoundException, SQLException, IOException {
+    public void update(Person p) throws FileNotFoundException, SQLException, IOException {
         Connection conn;
         PreparedStatement instruction;
         conn = connect();
@@ -238,16 +241,18 @@ public void update(Person p) throws FileNotFoundException, SQLException, IOExcep
             photoFile.delete();
         }
 
-      
         if (p.getEmail() != null && !p.getEmail().trim().isEmpty()) {
             instruction.setString(4, p.getEmail());
         } else {
             instruction.setNull(4, java.sql.Types.VARCHAR); 
         }
-        // ---------------------------------------------------------------
 
-        
-        instruction.setString(5, p.getNif()); 
+        if (p.getPhoneNumber() != null && !p.getPhoneNumber().trim().isEmpty()) {
+            instruction.setString(5, p.getPhoneNumber());
+        } else {
+            instruction.setNull(5, java.sql.Types.VARCHAR);
+        }
+        instruction.setString(6, p.getNif()); 
         
         instruction.executeUpdate();
         instruction.close();

@@ -31,6 +31,18 @@ private static final String EMAIL_REGEX =
         Matcher matcher = PATTERN.matcher(email);
         return matcher.matches();
     }
+    private static final String PHONE_REGEX = 
+        "^\\+?[0-9]{1,4}?[-.\\s]?\\(?[0-9]{1,3}?\\)?[-.\\s]?[0-9]{1,4}[-.\\s]?[0-9]{1,4}[-.\\s]?[0-9]{1,9}$";
+
+    private static final Pattern PHONE_PATTERN = Pattern.compile(PHONE_REGEX);
+
+    public static boolean isValidPhone(String phone) {
+        if (phone == null) {
+            return false;
+        }
+        Matcher matcher = PHONE_PATTERN.matcher(phone);
+        return matcher.matches();
+    }
     public static boolean isNumber(char c) {
         return (48 <= c && c <= 57);
     }
