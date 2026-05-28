@@ -29,6 +29,16 @@ public class Insert extends javax.swing.JDialog {
     public Insert(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        
+        //Codigo para que en el boton de date of birth salga el texto: "select a date"
+        for (java.awt.Component comp : dateOfBirth.getComponents()) {
+            if (comp instanceof javax.swing.JButton) {
+                javax.swing.JButton btn = (javax.swing.JButton) comp;
+                btn.setText("Select a date");
+                btn.setPreferredSize(null);
+            }
+        }
+        
         DropPhotoListener d = new DropPhotoListener(photo, this);
         DropTarget dropTarget = new DropTarget(photo, d);
         insert.setEnabled(false);
