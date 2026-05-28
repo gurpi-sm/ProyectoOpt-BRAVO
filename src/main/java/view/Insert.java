@@ -88,7 +88,7 @@ public class Insert extends javax.swing.JDialog {
         dateOfBirth = new org.jdatepicker.JDatePicker();
         jLabel9 = new javax.swing.JLabel();
         email = new javax.swing.JTextField();
-        PhoneNumber = new javax.swing.JLabel();
+        jLabelPhoneNumber = new javax.swing.JLabel();
         phoneNumber = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -220,11 +220,11 @@ public class Insert extends javax.swing.JDialog {
             }
         });
 
-        PhoneNumber.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        PhoneNumber.setText("Phone Number");
-        PhoneNumber.setMaximumSize(new java.awt.Dimension(150, 22));
-        PhoneNumber.setMinimumSize(new java.awt.Dimension(150, 22));
-        PhoneNumber.setPreferredSize(new java.awt.Dimension(150, 22));
+        jLabelPhoneNumber.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabelPhoneNumber.setText("Phone Number");
+        jLabelPhoneNumber.setMaximumSize(new java.awt.Dimension(150, 22));
+        jLabelPhoneNumber.setMinimumSize(new java.awt.Dimension(150, 22));
+        jLabelPhoneNumber.setPreferredSize(new java.awt.Dimension(150, 22));
 
         phoneNumber.setText("Phone Number");
         phoneNumber.setMaximumSize(new java.awt.Dimension(400, 22));
@@ -264,7 +264,7 @@ public class Insert extends javax.swing.JDialog {
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(PhoneNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabelPhoneNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(phoneNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -307,10 +307,9 @@ public class Insert extends javax.swing.JDialog {
                             .addComponent(email, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(PhoneNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabelPhoneNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(phoneNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(18, 18, 18)
                 .addComponent(jLabel2)
                 .addGap(23, 23, 23))
         );
@@ -391,7 +390,12 @@ public class Insert extends javax.swing.JDialog {
     private void nifActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nifActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_nifActionPerformed
-
+    
+    private void insertActionPerformed(java.awt.event.ActionEvent evt) {                                       
+    // Aquí es donde irá la lógica cuando el usuario pulse INSERT
+    // Por ahora lo dejamos vacío para que desaparezca la línea roja
+    }
+    
     private void emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_emailActionPerformed
@@ -425,7 +429,6 @@ public class Insert extends javax.swing.JDialog {
     }//GEN-LAST:event_phoneNumberKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel PhoneNumber;
     private org.jdatepicker.JDatePicker dateOfBirth;
     private javax.swing.JTextField email;
     private javax.swing.JButton insert;
@@ -434,6 +437,7 @@ public class Insert extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabelPhoneNumber;
     private javax.swing.JTextField name;
     private javax.swing.JTextField nif;
     private javax.swing.JTextField phoneNumber;
